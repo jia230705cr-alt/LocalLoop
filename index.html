@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>云上有局 Cloud & Gathering - 上海 Shanghai</title>
+    <title>云上有局 Meet Cloudy | Cloud & Stories</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -15,13 +15,19 @@
               'cream-card': '#FFFFFF',
               coral: '#E86A58',
               'coral-hover': '#D65846',
-              'mist-blue': '#A3C1E0',
+              'mist-blue': '#B4CEE6',
               'warm-yellow': '#F7D070',
               'soft-gray': '#F2EDE4',
               'charcoal': '#2C2825',
             },
-            borderRadius: {
-              '4xl': '2rem',
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0px)' },
+                '50%': { transform: 'translateY(-10px)' },
+              }
+            },
+            animation: {
+              float: 'float 3.5s ease-in-out infinite',
             }
           }
         }
@@ -36,91 +42,108 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FAF7F2; color: #2C2825; }
-        .k-card-shadow { box-shadow: 0 12px 35px -8px rgba(44, 40, 37, 0.04); }
-        .k-soft-shadow { box-shadow: 0 8px 20px rgba(232, 106, 88, 0.12); }
+        .k-card-shadow { box-shadow: 0 14px 40px -10px rgba(44, 40, 37, 0.05); }
+        .k-soft-glow { box-shadow: 0 10px 25px rgba(232, 106, 88, 0.15); }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState } = React;
 
-        // 上海精选体验样本数据
+        // 矢量绘制的高保真 Cloudy IP 矢量图形组件
+        function CloudyMascotSVG({ className = "w-40 h-40" }) {
+            return (
+                <svg className={className} viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 身体 (奶油圆润) -->
+                    <ellipse cx="100" cy="115" rx="55" ry="48" fill="#FFFDF9" stroke="#E5DEC9" strokeWidth="3"/>
+                    <!-- 眼睛 -->
+                    <circle cx="82" cy="102" r="5" fill="#2C2825"/>
+                    <circle cx="118" cy="102" r="5" fill="#2C2825"/>
+                    <!-- 腮红 -->
+                    <ellipse cx="73" cy="112" rx="7" ry="4" fill="#FFAAA6" opacity="0.7"/>
+                    <ellipse cx="127" cy="112" rx="7" ry="4" fill="#FFAAA6" opacity="0.7"/>
+                    <!-- 嘴巴/小嘴 -->
+                    <path d="M 96 108 Q 100 114 104 108 Z" fill="#F7B267"/>
+                    <!-- 左侧云朵翅膀 -->
+                    <g transform="translate(25, 95)">
+                        <path d="M 20 20 C 10 20, 5 10, 15 0 C 25 -10, 40 0, 45 10 C 50 10, 55 25, 40 30 C 30 35, 20 30, 20 20 Z" fill="#FFFFFF" stroke="#B4CEE6" strokeWidth="3.5"/>
+                    </g>
+                    <!-- 右侧云朵翅膀 -->
+                    <g transform="translate(130, 95) scale(-1, 1)">
+                        <path d="M 20 20 C 10 20, 5 10, 15 0 C 25 -10, 40 0, 45 10 C 50 10, 55 25, 40 30 C 30 35, 20 30, 20 20 Z" fill="#FFFFFF" stroke="#B4CEE6" strokeWidth="3.5"/>
+                    </g>
+                    <!-- 小红帽子 (红贝雷帽) -->
+                    <path d="M 65 78 C 65 58, 135 58, 135 78 Z" fill="#E86A58"/>
+                    <ellipse cx="100" cy="78" rx="38" ry="8" fill="#D65846"/>
+                    <circle cx="100" cy="55" r="5" fill="#F7D070"/>
+                    <!-- 黄色小挎包 -->
+                    <path d="M 75 110 Q 100 145 125 125" stroke="#F7D070" strokeWidth="4" fill="none" strokeDasharray="3 2"/>
+                    <rect x="115" y="120" width="18" height="15" rx="4" fill="#F7D070" stroke="#E5B23A" strokeWidth="2"/>
+                    <circle cx="124" cy="127" r="2" fill="#2C2825"/>
+                    <!-- 脚丫 -->
+                    <ellipse cx="85" cy="162" rx="8" ry="4" fill="#F7B267"/>
+                    <ellipse cx="115" cy="162" rx="8" ry="4" fill="#F7B267"/>
+                </svg>
+            );
+        }
+
+        // 顶栏专属 Cloudy 头像 Icon
+        function CloudyLogoIcon() {
+            return (
+                <div className="w-10 h-10 rounded-2xl bg-cream border border-soft-gray flex items-center justify-center p-1 shadow-sm overflow-hidden">
+                    <CloudyMascotSVG className="w-9 h-9" />
+                </div>
+            );
+        }
+
         const initialExperiences = [
             {
                 id: 'exp1',
                 title: 'Traditional Calligraphy & Tea Workshop in Lane House',
-                titleZh: '老洋房天井：书法写意与老上海大碗茶体验局',
-                category: 'Traditional Culture',
+                titleZh: '老洋房天井：书法写意与老上海大碗茶局',
                 categoryZh: '传统文化局',
                 price: 128,
-                rating: 4.9,
-                location: 'Former French Concession',
                 locationZh: '徐汇区 • 法租界老洋房',
-                duration: '2h',
                 image: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80'
             },
             {
                 id: 'exp2',
                 title: 'Xiao Long Bao Masterclass with Local Chef',
-                titleZh: '老字号师傅带教：18褶上海正宗小笼包手作局',
-                category: 'Food Experience',
+                titleZh: '老字号师傅带教：正宗18褶上海小笼包手作局',
                 categoryZh: '地道美食局',
                 price: 188,
-                rating: 4.95,
-                location: 'Yuyuan Garden Area',
                 locationZh: '黄浦区 • 豫园老街',
-                duration: '2.5h',
                 image: 'https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80'
             },
             {
                 id: 'exp3',
-                title: 'Handmade Porcelain Pottery Painting',
-                titleZh: '文创园区手艺人：青花瓷拉胚与釉下彩体验局',
-                category: 'Arts & Crafts',
-                categoryZh: '手艺工坊局',
-                price: 158,
-                rating: 4.88,
-                location: 'Jing’an Creative Park',
-                locationZh: '静安区 • 文创园',
-                duration: '2h',
-                image: 'https://images.unsplash.com/photo-1565193566173-7a0ee3dbe261?auto=format&fit=crop&w=800&q=80'
-            },
-            {
-                id: 'exp4',
                 title: 'Bund & Cyberpunk Night Photography Walk',
-                titleZh: '光影夜上海：外滩与陆家嘴夜景摄影导览局',
-                category: 'City Walk',
-                categoryZh: '慢游探城局',
+                titleZh: '光影夜上海：外滩与旧巷夜景摄影导览局',
+                categoryZh: '探城慢游局',
                 price: 150,
-                rating: 4.92,
-                location: 'The Bund',
                 locationZh: '黄浦区 • 外滩建筑群',
-                duration: '3h',
                 image: 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=800&q=80'
             }
         ];
 
         function CloudLoopApp() {
-            // 全局状态
-            const [lang, setLang] = useState('zh'); // 'zh' 或 'en'
-            const [city, setCity] = useState('Shanghai');
-            const [searchKeyword, setSearchKeyword] = useState('');
-            const [activeCategory, setActiveCategory] = useState('All');
-            const [selectedExp, setSelectedExp] = useState(null); // 预订弹窗控制
+            const [lang, setLang] = useState('zh');
+            const [currentCity, setCurrentCity] = useState('上海 Shanghai');
+            const [showCityDropdown, setShowCityDropdown] = useState(false);
+            const [selectedExp, setSelectedExp] = useState(null);
             const [bookingSuccess, setBookingSuccess] = useState(false);
-            const [stampsUnlocked, setStampsUnlocked] = useState(2);
+            const [showAuthModal, setShowAuthModal] = useState(false);
             const [isLoggedIn, setIsLoggedIn] = useState(false);
+            const [activeMapPin, setActiveMapPin] = useState('wukang');
 
-            // 过滤算法
-            const filteredExps = initialExperiences.filter(item => {
-                const titleMatch = lang === 'zh' 
-                    ? item.titleZh.toLowerCase().includes(searchKeyword.toLowerCase())
-                    : item.title.toLowerCase().includes(searchKeyword.toLowerCase());
-                const categoryMatch = activeCategory === 'All' || item.category === activeCategory;
-                return titleMatch && categoryMatch;
-            });
+            const citiesList = [
+                { name: '上海 Shanghai', active: true },
+                { name: '杭州 Hangzhou', active: false },
+                { name: '成都 Chengdu', active: false },
+                { name: '北京 Beijing', active: false },
+            ];
 
             const scrollToSection = (id) => {
                 const element = document.getElementById(id);
@@ -130,53 +153,69 @@
             };
 
             return (
-                <div className="min-h-screen flex flex-col justify-between selection:bg-coral/20">
-                    {/* ==================== 顶部导航栏 (Navbar - 韩系极简风) ==================== */}
-                    <header className="sticky top-0 z-50 bg-cream/80 backdrop-blur-md border-b border-soft-gray px-4 lg:px-8 py-3.5 flex items-center justify-between">
-                        {/* 左侧：Logo & 地区选择 */}
+                <div className="min-h-screen flex flex-col justify-between selection:bg-coral/20 relative">
+                    {/* ==================== 1. 顶部导航栏 (带真下拉城市切换) ==================== */}
+                    <header className="sticky top-0 z-50 bg-cream/90 backdrop-blur-md border-b border-soft-gray px-4 lg:px-8 py-3 flex items-center justify-between">
                         <div className="flex items-center space-x-4">
                             <div className="flex items-center space-x-2.5 cursor-pointer" onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})}>
-                                <div className="w-10 h-10 rounded-2xl bg-white border border-soft-gray flex items-center justify-center text-xl shadow-sm">
-                                    ☁️
-                                </div>
+                                <CloudyLogoIcon />
                                 <div>
-                                    <span className="text-xl font-extrabold tracking-tight text-charcoal leading-none block">
-                                        云上有局 <span className="text-coral text-xs font-semibold uppercase tracking-wider ml-1">Cloud & Gathering</span>
+                                    <span className="text-lg font-extrabold tracking-tight text-charcoal leading-none block">
+                                        云上有局 <span className="text-coral text-xs font-semibold uppercase tracking-wider ml-1">Cloud & Stories</span>
                                     </span>
                                 </div>
                             </div>
 
-                            {/* 城市选择器下拉 */}
+                            {/* 可点击下拉的城市选择器 */}
                             <div className="relative border-l border-soft-gray pl-4 hidden sm:block">
-                                <button className="bg-white px-3.5 py-1.5 rounded-full border border-soft-gray text-xs font-bold text-charcoal flex items-center space-x-1.5 hover:border-coral transition shadow-sm">
+                                <button 
+                                    onClick={() => setShowCityDropdown(!showCityDropdown)}
+                                    className="bg-white px-3.5 py-1.5 rounded-full border border-soft-gray text-xs font-bold text-charcoal flex items-center space-x-1.5 hover:border-coral transition shadow-sm"
+                                >
                                     <i className="fa-solid fa-location-dot text-coral text-xs"></i>
-                                    <span>{lang === 'zh' ? '上海 Shanghai' : 'Shanghai'}</span>
-                                    <i className="fa-solid fa-chevron-down text-[10px] text-charcoal/40 ml-1"></i>
+                                    <span>{currentCity}</span>
+                                    <i className={`fa-solid fa-chevron-down text-[10px] text-charcoal/40 ml-1 transition-transform ${showCityDropdown ? 'rotate-180' : ''}`}></i>
                                 </button>
+
+                                {/* 下拉城市列表 */}
+                                {showCityDropdown && (
+                                    <div className="absolute top-full left-4 mt-2 w-44 bg-white rounded-2xl border border-soft-gray shadow-xl py-2 z-50 text-xs font-medium">
+                                        <div className="px-3 py-1 text-[10px] text-charcoal/40 font-bold uppercase tracking-wider">选择探索城市</div>
+                                        {citiesList.map((c, index) => (
+                                            <button
+                                                key={index}
+                                                onClick={() => {
+                                                    setCurrentCity(c.name);
+                                                    setShowCityDropdown(false);
+                                                }}
+                                                className={`w-full text-left px-3.5 py-2 hover:bg-cream flex justify-between items-center ${c.name === currentCity ? 'text-coral font-bold bg-cream/50' : 'text-charcoal'}`}
+                                            >
+                                                <span>{c.name}</span>
+                                                {c.name === currentCity && <i className="fa-solid fa-check text-[10px]"></i>}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         </div>
 
-                        {/* 中间：四大核心功能菜单 */}
+                        {/* 极简四大导航 */}
                         <nav className="hidden md:flex items-center space-x-7 text-xs font-bold text-charcoal/75 tracking-wide">
-                            <button onClick={() => scrollToSection('experience-hub')} className="hover:text-coral transition flex items-center space-x-1.5">
-                                <span>⛩️</span>
-                                <span>{lang === 'zh' ? '体验中心' : 'Experience Hub'}</span>
+                            <button onClick={() => scrollToSection('experience-hub')} className="hover:text-coral transition">
+                                ⛩️ {lang === 'zh' ? '精选局' : 'Experiences'}
                             </button>
-                            <button onClick={() => scrollToSection('city-explorer')} className="hover:text-coral transition flex items-center space-x-1.5">
-                                <span>🗺️</span>
-                                <span>{lang === 'zh' ? '探城地图' : 'City Explorer'}</span>
+                            <button onClick={() => scrollToSection('city-explorer')} className="hover:text-coral transition">
+                                🗺️ {lang === 'zh' ? '手绘地图' : 'Map'}
                             </button>
-                            <button onClick={() => scrollToSection('achievement-center')} className="hover:text-coral transition flex items-center space-x-1.5">
-                                <span>📖</span>
-                                <span>{lang === 'zh' ? '成就中心' : 'Achievement Center'}</span>
+                            <button onClick={() => scrollToSection('passport-preview')} className="hover:text-coral transition">
+                                📖 {lang === 'zh' ? '云游护照' : 'Passport'}
                             </button>
-                            <button onClick={() => scrollToSection('community-events')} className="hover:text-coral transition flex items-center space-x-1.5">
-                                <span>💬</span>
-                                <span>{lang === 'zh' ? '社群局' : 'Community & Events'}</span>
+                            <button onClick={() => scrollToSection('cloudy-story')} className="hover:text-coral transition">
+                                🕊️ {lang === 'zh' ? 'Cloudy的日记' : 'Story'}
                             </button>
                         </nav>
 
-                        {/* 右侧：语言切换 & 登录账户 */}
+                        {/* 切换语言与登录注册按钮 */}
                         <div className="flex items-center space-x-3">
                             <button 
                                 onClick={() => setLang(lang === 'zh' ? 'en' : 'zh')}
@@ -188,21 +227,21 @@
                             <button 
                                 onClick={() => setIsLoggedIn(!isLoggedIn)}
                                 className={`text-xs font-bold px-4 py-2 rounded-full shadow-sm transition flex items-center space-x-1.5 ${
-                                    isLoggedIn ? 'bg-mist-blue/20 text-charcoal' : 'bg-coral text-white hover:bg-coral-hover k-soft-shadow'
+                                    isLoggedIn ? 'bg-mist-blue/20 text-charcoal' : 'bg-coral text-white hover:bg-coral-hover k-soft-glow'
                                 }`}
                             >
                                 <i className="fa-regular fa-user"></i>
-                                <span>{isLoggedIn ? (lang === 'zh' ? '我的账户' : 'Profile') : (lang === 'zh' ? '登录 / 注册' : 'Sign In')}</span>
+                                <span>{isLoggedIn ? (lang === 'zh' ? '我的账号' : 'Account') : (lang === 'zh' ? '登录 / 注册' : 'Sign In')}</span>
                             </button>
                         </div>
                     </header>
 
-                    {/* ==================== 1. Hero 搜索与 IP 展示区 (韩系杂志排版) ==================== */}
-                    <section className="max-w-6xl mx-auto px-4 pt-8 pb-6 w-full">
+                    {/* ==================== 2. Hero 区域 (文艺、动态IP、简练) ==================== */}
+                    <section className="max-w-6xl mx-auto px-4 pt-6 pb-6 w-full">
                         <div className="bg-white rounded-4xl p-8 lg:p-12 border border-soft-gray k-card-shadow flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
-                            <div className="md:w-3/5 space-y-6 z-10">
+                            <div className="md:w-7/12 space-y-5 z-10">
                                 <div className="inline-flex items-center space-x-2 bg-cream text-coral text-xs font-bold px-3.5 py-1.5 rounded-full border border-soft-gray">
-                                    <span>🧢 Cloudy（云朵鸽）带你探索上海</span>
+                                    <span>🌿 慢一点，才能撞见城市隐藏的温柔</span>
                                 </div>
                                 <h1 className="text-3xl lg:text-5xl font-extrabold text-charcoal leading-tight tracking-tight">
                                     {lang === 'zh' ? (
@@ -213,311 +252,204 @@
                                 </h1>
                                 <p className="text-charcoal/65 text-xs lg:text-sm leading-relaxed max-w-md">
                                     {lang === 'zh' 
-                                        ? '针对上海特调的在地文化体验平台。真正走入老洋房、体验手作小笼包、探索私房 Citywalk。' 
-                                        : 'Discover hidden gems, authentic cultural experiences, and local food in Shanghai.'}
+                                        ? '“旅行不是赶路，是听一座城市开花的声音。” 跟着 Cloudy 探索老洋房茶局、手作小笼包与私房 Citywalk。' 
+                                        : 'Discover hidden gems, authentic teahouses, and local artisanal workshops in Shanghai.'}
                                 </p>
 
-                                {/* 全局快速搜索框 */}
+                                {/* 搜索框 */}
                                 <div className="pt-2">
-                                    <div className="flex bg-cream p-1.5 rounded-2xl border border-soft-gray max-w-lg">
+                                    <div className="flex bg-cream p-1.5 rounded-2xl border border-soft-gray max-w-lg shadow-inner">
                                         <div className="flex items-center pl-3.5 text-charcoal/40">
                                             <i className="fa-solid fa-magnifying-glass text-xs"></i>
                                         </div>
                                         <input 
                                             type="text" 
-                                            value={searchKeyword}
-                                            onChange={(e) => setSearchKeyword(e.target.value)}
-                                            placeholder={lang === 'zh' ? "搜索：小笼包、老洋房书法、摄影..." : "Search: Xiao Long Bao, Calligraphy..."}
+                                            placeholder={lang === 'zh' ? "搜索：老茶馆、手作小笼包、武康路..." : "Search: Teahouse, Xiao Long Bao..."}
                                             className="w-full bg-transparent px-3 py-2 text-xs font-medium focus:outline-none text-charcoal placeholder-charcoal/40"
                                         />
                                         <button 
                                             onClick={() => scrollToSection('experience-hub')}
-                                            className="bg-coral text-white font-bold px-5 py-2.5 rounded-xl text-xs hover:bg-coral-hover transition whitespace-nowrap shadow-sm"
+                                            className="bg-coral text-white font-bold px-5 py-2.5 rounded-xl text-xs hover:bg-coral-hover transition shadow-sm whitespace-nowrap"
                                         >
-                                            {lang === 'zh' ? '搜索局' : 'Search'}
+                                            {lang === 'zh' ? '探索体验' : 'Explore'}
                                         </button>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Cloudy IP 招牌展示区 */}
-                            <div className="md:w-2/5 flex flex-col items-center justify-center">
-                                <div className="w-64 h-64 bg-cream rounded-full flex flex-col items-center justify-center border-2 border-dashed border-soft-gray p-6 text-center shadow-inner relative">
-                                    <div className="text-7xl animate-bounce mb-2">🕊️</div>
-                                    <span className="text-[11px] font-bold bg-white text-coral border border-soft-gray px-3 py-1 rounded-full shadow-sm">
-                                        ☁️ 云朵翅膀 + 🧢 小红帽
-                                    </span>
-                                    <p className="text-[11px] text-charcoal/60 mt-2.5 font-medium italic">
-                                        {lang === 'zh' ? '“今天适合去法租界喝大碗茶看梧桐树！”' : '“Perfect day for local tea & street walk!”'}
-                                    </p>
+                            {/* 动态浮动 Cloudy IP 卡片 */}
+                            <div className="md:w-5/12 flex flex-col items-center justify-center relative">
+                                <div className="w-72 h-72 bg-cream/80 rounded-full flex flex-col items-center justify-center border-2 border-dashed border-soft-gray p-6 text-center relative shadow-inner animate-float">
+                                    {/* 忠实还原图片的矢量 Cloudy */}
+                                    <CloudyMascotSVG className="w-44 h-44 drop-shadow-md" />
+                                    
+                                    {/* 今日文艺对话气泡 */}
+                                    <div className="absolute -bottom-2 bg-white text-charcoal border border-soft-gray px-4 py-2 rounded-2xl shadow-md text-xs font-bold text-center">
+                                        ✨ <span className="text-coral">Cloudy 今日建议：</span>“去旧巷茶馆坐坐吧”
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </section>
 
-                    {/* ==================== 2. 功能一：Experience Hub (优先预订) ==================== */}
-                    <section id="experience-hub" className="max-w-6xl mx-auto px-4 py-10 w-full space-y-6">
-                        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-soft-gray pb-4">
+                    {/* ==================== 3. 注册激励转化区 (Incentive Banner) ==================== */}
+                    <section className="max-w-6xl mx-auto px-4 py-3 w-full">
+                        <div className="bg-gradient-to-r from-coral/10 via-cream to-mist-blue/20 border border-coral/20 rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-4 card-shadow">
+                            <div className="flex items-center space-x-3">
+                                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-2xl shadow-sm border border-coral/20">
+                                    🎁
+                                </div>
+                                <div>
+                                    <h4 className="font-extrabold text-sm text-charcoal">{lang === 'zh' ? '加入云上有局，解锁首局体验礼包' : 'Join Cloud & Stories Today'}</h4>
+                                    <p className="text-xs text-charcoal/65 mt-0.5">{lang === 'zh' ? '新用户注册立享 ¥50 体验金 + 获得 Cloudy 限定线上纪念勋章' : 'Get ¥50 experience coupon + exclusive Cloudy digital badge upon sign up.'}</p>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={() => setShowAuthModal(true)}
+                                className="bg-coral text-white font-bold px-6 py-2.5 rounded-full text-xs hover:bg-coral-hover transition shadow-sm whitespace-nowrap k-soft-glow"
+                            >
+                                {lang === 'zh' ? '免费注册领福利' : 'Sign Up Free'}
+                            </button>
+                        </div>
+                    </section>
+
+                    {/* ==================== 4. 体验活动精选区 (只选 3 个，不堆砌) ==================== */}
+                    <section id="experience-hub" className="max-w-6xl mx-auto px-4 py-8 w-full space-y-6">
+                        <div className="flex justify-between items-end border-b border-soft-gray pb-3">
                             <div>
-                                <div className="inline-block text-[11px] font-bold text-coral uppercase tracking-wider mb-1">
-                                    Experience Hub
-                                </div>
-                                <h2 className="text-2xl lg:text-3xl font-extrabold text-charcoal">
-                                    {lang === 'zh' ? '⛩️ 寻找你的下一个上海在地局' : 'Explore Local Cultural Experiences'}
-                                </h2>
+                                <span className="text-[10px] font-bold text-coral uppercase tracking-wider block">Today's Picks</span>
+                                <h2 className="text-2xl font-extrabold text-charcoal">{lang === 'zh' ? '⛩️ 今日 Cloudy 独家私房推荐' : 'Featured Cultural Experiences'}</h2>
                             </div>
-
-                            {/* 分类过滤 */}
-                            <div className="flex space-x-2 overflow-x-auto pb-1">
-                                {['All', 'Traditional Culture', 'Food Experience', 'Arts & Crafts', 'City Walk'].map(cat => (
-                                    <button 
-                                        key={cat}
-                                        onClick={() => setActiveCategory(cat)}
-                                        className={`px-4 py-2 rounded-full text-xs font-bold transition whitespace-nowrap ${
-                                            activeCategory === cat 
-                                                ? 'bg-coral text-white shadow-sm' 
-                                                : 'bg-white text-charcoal/70 border border-soft-gray hover:bg-cream'
-                                        }`}
-                                    >
-                                        {cat === 'All' ? (lang === 'zh' ? '全部体验局' : 'All') : cat}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* 体验卡片网格 */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {filteredExps.length > 0 ? (
-                                filteredExps.map((exp) => (
-                                    <div key={exp.id} className="bg-white rounded-3xl overflow-hidden border border-soft-gray k-card-shadow hover:-translate-y-1.5 transition duration-300 flex flex-col justify-between">
-                                        <div>
-                                            <div className="relative">
-                                                <img src={exp.image} alt={exp.title} className="w-full h-44 object-cover" />
-                                                <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-charcoal font-bold text-[10px] px-2.5 py-1 rounded-full border border-soft-gray shadow-sm">
-                                                    {lang === 'zh' ? exp.categoryZh : exp.category}
-                                                </span>
-                                            </div>
-                                            <div className="p-5 space-y-2">
-                                                <div className="flex justify-between items-center text-[11px] text-charcoal/50 font-medium">
-                                                    <span>📍 {lang === 'zh' ? exp.locationZh : exp.location}</span>
-                                                    <span>⏱️ {exp.duration}</span>
-                                                </div>
-                                                <h3 className="font-bold text-sm text-charcoal line-clamp-2 leading-snug">
-                                                    {lang === 'zh' ? exp.titleZh : exp.title}
-                                                </h3>
-                                            </div>
-                                        </div>
-                                        <div className="p-5 pt-0 border-t border-cream flex justify-between items-center mt-2">
-                                            <div>
-                                                <span className="text-[10px] text-charcoal/40 font-bold">RMB</span>
-                                                <span className="text-lg font-extrabold text-coral ml-1">¥{exp.price}</span>
-                                            </div>
-                                            <button 
-                                                onClick={() => setSelectedExp(exp)}
-                                                className="bg-charcoal text-cream px-4 py-2 rounded-xl text-xs font-bold hover:bg-coral transition shadow-sm"
-                                            >
-                                                {lang === 'zh' ? '组局预约' : 'Book Now'}
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))
-                            ) : (
-                                <div className="col-span-full py-12 text-center text-charcoal/50 text-xs">
-                                    {lang === 'zh' ? '没有找到符合条件的体验局，尝试换个词搜索吧～' : 'No experiences found.'}
-                                </div>
-                            )}
-                        </div>
-                    </section>
-
-                    {/* ==================== 3. 功能二：City Explorer (探城地图) ==================== */}
-                    <section id="city-explorer" className="max-w-6xl mx-auto px-4 py-10 w-full space-y-6">
-                        <div className="border-b border-soft-gray pb-4">
-                            <div className="inline-block text-[11px] font-bold text-mist-blue uppercase tracking-wider mb-1">
-                                City Explorer
-                            </div>
-                            <h2 className="text-2xl lg:text-3xl font-extrabold text-charcoal">
-                                {lang === 'zh' ? '🗺️ 武康路至外滩：Cloudy 的手绘路线图' : 'Explore Shanghai Neighbourhoods'}
-                            </h2>
-                        </div>
-
-                        <div className="bg-white rounded-4xl p-6 lg:p-8 border border-soft-gray k-card-shadow flex flex-col lg:flex-row gap-6 items-center">
-                            {/* 地图模拟面板 */}
-                            <div className="w-full lg:w-2/3 h-80 bg-cream rounded-3xl border-2 border-dashed border-soft-gray relative overflow-hidden flex items-center justify-center">
-                                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#2C2825_1px,transparent_1px)] [background-size:18px_18px]"></div>
-                                <span className="absolute top-4 left-4 bg-white/90 text-[11px] font-bold text-charcoal px-3 py-1 rounded-full border border-soft-gray shadow-sm">
-                                    📍 {lang === 'zh' ? '上海市核心打卡区域交互地图' : 'Shanghai Core Interactive Map'}
-                                </span>
-
-                                {/* 交互点位 1 */}
-                                <div className="absolute top-1/3 left-1/3 group cursor-pointer" onClick={() => alert('已选定：武康路梧桐树咖啡走廊')}>
-                                    <div className="w-9 h-9 bg-coral text-white rounded-full flex items-center justify-center shadow-md text-sm group-hover:scale-125 transition">📍</div>
-                                    <div className="bg-charcoal text-white text-[10px] px-2.5 py-0.5 rounded-full mt-1 shadow whitespace-nowrap">武康路</div>
-                                </div>
-                                {/* 交互点位 2 */}
-                                <div className="absolute top-1/2 left-2/3 group cursor-pointer" onClick={() => alert('已选定：豫园老街与九曲桥体验点')}>
-                                    <div className="w-9 h-9 bg-warm-yellow text-charcoal rounded-full flex items-center justify-center shadow-md text-sm group-hover:scale-125 transition">📍</div>
-                                    <div className="bg-charcoal text-white text-[10px] px-2.5 py-0.5 rounded-full mt-1 shadow whitespace-nowrap">豫园老街</div>
-                                </div>
-                            </div>
-
-                            {/* 路线说明 */}
-                            <div className="w-full lg:w-1/3 space-y-4">
-                                <div className="bg-cream p-5 rounded-3xl border border-soft-gray">
-                                    <span className="text-[10px] font-bold bg-coral/15 text-coral px-2.5 py-1 rounded-full">Citywalk Route</span>
-                                    <h4 className="font-bold text-charcoal text-sm mt-2">{lang === 'zh' ? '【武康路-安福路】梧桐树与咖啡漫步' : 'Wukang Rd Coffee & Heritage Trail'}</h4>
-                                    <p className="text-xs text-charcoal/65 mt-1.5 leading-relaxed">
-                                        {lang === 'zh' ? '全程约 2.8 公里，打卡 4 家独立咖啡馆与老洋房建筑。' : '2.8 km walk connecting heritage lanes and indie cafes.'}
-                                    </p>
-                                </div>
-                                <button className="w-full bg-mist-blue/20 text-charcoal font-bold py-3.5 rounded-2xl text-xs hover:bg-mist-blue/40 transition">
-                                    {lang === 'zh' ? '查看更多上海 Citywalk 路线 →' : 'View All Shanghai Citywalk Routes →'}
-                                </button>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* ==================== 4. 功能三：Achievement Center (成就中心) ==================== */}
-                    <section id="achievement-center" className="max-w-6xl mx-auto px-4 py-10 w-full space-y-6">
-                        <div className="border-b border-soft-gray pb-4">
-                            <div className="inline-block text-[11px] font-bold text-warm-yellow uppercase tracking-wider mb-1">
-                                Achievement Center
-                            </div>
-                            <h2 className="text-2xl lg:text-3xl font-extrabold text-charcoal">
-                                {lang === 'zh' ? '📖 上海数字护照与打卡成就' : 'Local Passport & Achievements'}
-                            </h2>
-                        </div>
-
-                        <div className="bg-charcoal text-cream p-7 lg:p-10 rounded-4xl card-shadow border-4 border-warm-yellow/20 flex flex-col md:flex-row justify-between items-center gap-8">
-                            <div className="space-y-4 md:w-1/2">
-                                <div className="flex items-center space-x-2">
-                                    <span className="text-2xl">☁️</span>
-                                    <span className="font-extrabold text-white text-base tracking-widest">SHANGHAI PASSPORT</span>
-                                </div>
-                                <p className="text-xs text-cream/70 leading-relaxed">
-                                    {lang === 'zh' 
-                                        ? '前往线下合作老茶馆或手工艺工坊，手机扫码即可解锁上海数字印章，换取限定合作折扣！' 
-                                        : 'Scan QR codes at offline partner stores to collect stamps and unlock discounts.'}
-                                </p>
-                                <div className="bg-white/10 p-3.5 rounded-2xl border border-white/10 space-y-2">
-                                    <div className="flex justify-between text-xs font-bold">
-                                        <span>{lang === 'zh' ? '上海印章收集进度' : 'Stamp Progress'}</span>
-                                        <span className="text-warm-yellow">{stampsUnlocked} / 4 解锁</span>
-                                    </div>
-                                    <div className="w-full bg-white/20 h-2 rounded-full overflow-hidden">
-                                        <div className="bg-warm-yellow h-full transition-all" style={{width: `${(stampsUnlocked/4)*100}%`}}></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* 印章展示 */}
-                            <div className="grid grid-cols-2 gap-3.5 w-full md:w-1/2">
-                                <div className="bg-white/10 p-4 rounded-2xl text-center border border-warm-yellow/30">
-                                    <div className="text-2xl mb-1">🍵</div>
-                                    <div className="text-xs font-bold text-white">{lang === 'zh' ? '百年茶楼章' : 'Teahouse'}</div>
-                                    <span className="text-[10px] text-warm-yellow font-medium">✔ {lang === 'zh' ? '已点亮' : 'Unlocked'}</span>
-                                </div>
-                                <div className="bg-white/10 p-4 rounded-2xl text-center border border-warm-yellow/30">
-                                    <div className="text-2xl mb-1">🥟</div>
-                                    <div className="text-xs font-bold text-white">{lang === 'zh' ? '小笼包达人章' : 'Dumpling Master'}</div>
-                                    <span className="text-[10px] text-warm-yellow font-medium">✔ {lang === 'zh' ? '已点亮' : 'Unlocked'}</span>
-                                </div>
-                                <div className="bg-white/5 p-4 rounded-2xl text-center border border-white/10 opacity-60 cursor-pointer" onClick={() => setStampsUnlocked(prev => Math.min(4, prev+1))}>
-                                    <div className="text-2xl mb-1">📸</div>
-                                    <div className="text-xs font-bold text-white">{lang === 'zh' ? '外滩夜游章' : 'Night Walk'}</div>
-                                    <span className="text-[10px] text-cream/50">{lang === 'zh' ? '点击模拟解锁' : 'Click to Unlock'}</span>
-                                </div>
-                                <div className="bg-white/5 p-4 rounded-2xl text-center border border-white/10 opacity-60">
-                                    <div className="text-2xl mb-1">🎨</div>
-                                    <div className="text-xs font-bold text-white">{lang === 'zh' ? '青花瓷体验章' : 'Pottery Stamp'}</div>
-                                    <span className="text-[10px] text-cream/50">{lang === 'zh' ? '待解锁' : 'Locked'}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* ==================== 5. 功能四：Community & Events (社群与线下局) ==================== */}
-                    <section id="community-events" className="max-w-6xl mx-auto px-4 py-10 w-full space-y-6">
-                        <div className="border-b border-soft-gray pb-4 flex justify-between items-end">
-                            <div>
-                                <div className="inline-block text-[11px] font-bold text-coral uppercase tracking-wider mb-1">
-                                    Community & Events
-                                </div>
-                                <h2 className="text-2xl lg:text-3xl font-extrabold text-charcoal">
-                                    {lang === 'zh' ? '💬 云上局 Community & 线下体验聚会' : 'Community & Offline Meetups'}
-                                </h2>
-                            </div>
+                            <button onClick={() => alert('更多上海体验局载入中...')} className="text-xs font-bold text-coral hover:underline">
+                                {lang === 'zh' ? '查看更多体验 →' : 'View All →'}
+                            </button>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="bg-white p-6 rounded-3xl border border-soft-gray k-card-shadow space-y-3">
-                                <div className="flex items-center space-x-2.5 text-xs">
-                                    <span className="w-8 h-8 rounded-full bg-mist-blue/30 flex items-center justify-center font-bold text-charcoal">A</span>
+                            {initialExperiences.map((exp) => (
+                                <div key={exp.id} className="bg-white rounded-3xl overflow-hidden border border-soft-gray k-card-shadow hover:-translate-y-1.5 transition duration-300 flex flex-col justify-between">
                                     <div>
-                                        <div className="font-bold text-charcoal">Alex ( 英国 🇬🇧 )</div>
-                                        <div className="text-[10px] text-charcoal/40">上海法租界 • 2小时前</div>
+                                        <div className="relative">
+                                            <img src={exp.image} alt={exp.title} className="w-full h-48 object-cover" />
+                                            <span className="absolute top-3 left-3 bg-white/90 text-charcoal font-bold text-[10px] px-2.5 py-1 rounded-full border border-soft-gray shadow-sm">
+                                                {exp.categoryZh}
+                                            </span>
+                                        </div>
+                                        <div className="p-5 space-y-2">
+                                            <div className="text-[10px] text-charcoal/40 font-medium">📍 {exp.locationZh}</div>
+                                            <h3 className="font-bold text-sm text-charcoal line-clamp-2 leading-snug">
+                                                {exp.titleZh}
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    <div className="p-5 pt-0 flex justify-between items-center border-t border-cream mt-2">
+                                        <div>
+                                            <span className="text-[10px] text-charcoal/40 font-bold">RMB</span>
+                                            <span className="text-lg font-extrabold text-coral ml-1">¥{exp.price}</span>
+                                        </div>
+                                        <button 
+                                            onClick={() => setSelectedExp(exp)}
+                                            className="bg-charcoal text-cream px-4 py-2 rounded-xl text-xs font-bold hover:bg-coral transition shadow-sm"
+                                        >
+                                            {lang === 'zh' ? '预约组局' : 'Book'}
+                                        </button>
                                     </div>
                                 </div>
-                                <p className="text-xs text-charcoal/70 leading-relaxed">
-                                    {lang === 'zh' ? '跟着 Cloudy 找到了这家老洋房天井茶馆，拿到了我的第一个大碗茶印章，体验太棒了！' : 'Found this incredible lane house teahouse thanks to Cloudy! Unlocked my first stamp.'}
-                                </p>
-                            </div>
+                            ))}
+                        </div>
+                    </section>
 
-                            <div className="bg-white p-6 rounded-3xl border border-soft-gray k-card-shadow space-y-3">
-                                <div className="flex items-center space-x-2.5 text-xs">
-                                    <span className="w-8 h-8 rounded-full bg-coral/20 text-coral flex items-center justify-center font-bold">L</span>
-                                    <div>
-                                        <div className="font-bold text-charcoal">Lily ( 本地领队 🇨🇳 )</div>
-                                        <div className="text-[10px] text-charcoal/40">上海豫园 • 昨天</div>
+                    {/* ==================== 5. 手绘风格探城地图 (交互可点击) ==================== */}
+                    <section id="city-explorer" className="max-w-6xl mx-auto px-4 py-8 w-full space-y-6">
+                        <div className="border-b border-soft-gray pb-3">
+                            <span className="text-[10px] font-bold text-mist-blue uppercase tracking-wider block">Illustrated Map</span>
+                            <h2 className="text-2xl font-extrabold text-charcoal">{lang === 'zh' ? '🗺️ Cloudy 的上海手绘漫游地图' : 'Shanghai Illustrated Map'}</h2>
+                        </div>
+
+                        <div className="bg-white rounded-4xl p-6 border border-soft-gray k-card-shadow flex flex-col lg:flex-row gap-6 items-center">
+                            {/* 手绘风高颜值地图 */}
+                            <div className="w-full lg:w-2/3 h-80 bg-[#FAF3E8] rounded-3xl border-2 border-dashed border-[#E5DEC9] relative overflow-hidden flex items-center justify-center p-4">
+                                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#2C2825_1px,transparent_1px)] [background-size:20px_20px]"></div>
+                                
+                                <span className="absolute top-4 left-4 bg-white/90 text-[10px] font-bold text-charcoal px-3 py-1 rounded-full border border-soft-gray shadow-sm">
+                                    💡 {lang === 'zh' ? '点击下方手绘打卡点互动' : 'Click map markers'}
+                                </span>
+
+                                {/* 手绘路线轨迹线 */}
+                                <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                                    <path d="M 120 180 Q 250 80 450 160" fill="none" stroke="#F7D070" strokeWidth="4" strokeDasharray="6 6" />
+                                </svg>
+
+                                {/* 地标点 1：武康路 */}
+                                <div 
+                                    className={`absolute top-1/3 left-1/4 cursor-pointer transform hover:scale-110 transition ${activeMapPin === 'wukang' ? 'z-20' : ''}`}
+                                    onClick={() => setActiveMapPin('wukang')}
+                                >
+                                    <div className="bg-coral text-white text-xs px-3 py-1.5 rounded-full shadow-md font-bold flex items-center space-x-1">
+                                        <span>📍 武康路老洋房</span>
                                     </div>
                                 </div>
-                                <p className="text-xs text-charcoal/70 leading-relaxed">
-                                    {lang === 'zh' ? '本周末【云上局线下相聚局：手作小笼包与古风摄影】开始报名啦！欢迎中外朋友一起来玩。' : 'Weekend meetup: Xiao Long Bao making & photo walk open for signups!'}
-                                </p>
+
+                                {/* 地标点 2：豫园老街 */}
+                                <div 
+                                    className={`absolute bottom-1/3 right-1/3 cursor-pointer transform hover:scale-110 transition ${activeMapPin === 'yuyuan' ? 'z-20' : ''}`}
+                                    onClick={() => setActiveMapPin('yuyuan')}
+                                >
+                                    <div className="bg-warm-yellow text-charcoal text-xs px-3 py-1.5 rounded-full shadow-md font-bold flex items-center space-x-1 border border-soft-gray">
+                                        <span>🍵 豫园百年来茶楼</span>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className="bg-white p-6 rounded-3xl border border-soft-gray k-card-shadow flex flex-col justify-between">
-                                <div>
-                                    <span className="text-[10px] font-bold bg-warm-yellow/30 text-charcoal px-3 py-1 rounded-full">
-                                        🎉 官方线下局预告
-                                    </span>
-                                    <h4 className="font-bold text-sm text-charcoal mt-3">{lang === 'zh' ? '周末 CloudLoop 中外文化相聚局' : 'Weekend Cross-Cultural Meetup'}</h4>
-                                    <p className="text-xs text-charcoal/60 mt-1">地点：静安区文创园体验中心</p>
-                                </div>
-                                <button onClick={() => alert('线下局报名成功！组委会将通过 Email 联系您。')} className="w-full bg-coral text-white text-xs font-bold py-2.5 rounded-xl mt-4 hover:bg-coral-hover transition shadow-sm">
-                                    {lang === 'zh' ? '模拟报名线下局' : 'Join Event'}
-                                </button>
+                            {/* 选中地标的动态详情卡片 */}
+                            <div className="w-full lg:w-1/3 space-y-4">
+                                {activeMapPin === 'wukang' ? (
+                                    <div className="bg-cream p-5 rounded-3xl border border-soft-gray space-y-2">
+                                        <span className="text-[10px] font-bold bg-coral/20 text-coral px-2.5 py-0.5 rounded-full">Cloudy 私房路线 A</span>
+                                        <h4 className="font-bold text-charcoal text-sm">【武康路-安福路】梧桐树与老洋房漫步</h4>
+                                        <p className="text-xs text-charcoal/65 leading-relaxed">全长 2.8 公里。打卡老洋房露台茶馆、独立手作店，光线最好的是下午 4 点。</p>
+                                    </div>
+                                ) : (
+                                    <div className="bg-cream p-5 rounded-3xl border border-soft-gray space-y-2">
+                                        <span className="text-[10px] font-bold bg-warm-yellow/40 text-charcoal px-2.5 py-0.5 rounded-full">Cloudy 私房路线 B</span>
+                                        <h4 className="font-bold text-charcoal text-sm">【豫园老街】百年茶楼与古法点心体验</h4>
+                                        <p className="text-xs text-charcoal/65 leading-relaxed">避开主干道人流，深入九曲桥旁老巷子，喝一杯正宗大碗茶。</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </section>
 
-                    {/* ==================== 6. IP 形象与品牌故事 ==================== */}
-                    <section className="bg-cream border-t border-soft-gray py-14">
-                        <div className="max-w-4xl mx-auto px-4 text-center space-y-4">
-                            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto text-3xl shadow-sm border border-soft-gray">
-                                🕊️
+                    {/* ==================== 6. 自然融合的品牌故事 (Cloudy 的城市日记) ==================== */}
+                    <section id="cloudy-story" className="max-w-6xl mx-auto px-4 py-8 w-full">
+                        <div className="bg-white rounded-4xl p-8 border border-soft-gray k-card-shadow space-y-6">
+                            <div className="flex items-center space-x-4 border-b border-soft-gray pb-4">
+                                <CloudyLogoIcon />
+                                <div>
+                                    <h3 className="text-lg font-extrabold text-charcoal">Cloudy 的城市探险日记</h3>
+                                    <p className="text-xs text-coral font-semibold">云上有局品牌故事｜收集那些被忽视的小惊喜</p>
+                                </div>
                             </div>
-                            <h3 className="text-xl font-extrabold text-charcoal">
-                                {lang === 'zh' ? '关于 Cloudy 云朵鸽｜一个收集城市故事的小家伙' : 'Meet Cloudy the Pigeon'}
-                            </h3>
-                            <p className="text-xs text-charcoal/70 leading-relaxed max-w-2xl mx-auto bg-white/80 p-6 rounded-3xl border border-soft-gray">
-                                {lang === 'zh' 
-                                    ? '它戴着心爱的小红帽，有着两团软绵绵的云朵翅膀。在上海的梧桐树与巷弄里，它喜欢慢慢走。旅行不一定要走得很远，重要的是，你有没有真正遇见这座城市。' 
-                                    : 'A little pigeon with cloud wings and a red beret, traveling through cities to collect hidden gems and local stories.'}
-                            </p>
+
+                            <div className="text-xs text-charcoal/70 leading-relaxed space-y-3 bg-cream p-6 rounded-3xl border border-soft-gray">
+                                <p>在一座热闹又普通的城市里，住着一只不太普通的小鸽子 Cloudy。它的翅膀是两团软绵绵的云朵，开心的时候会蓬蓬地飘起来。</p>
+                                <p>它戴着心爱的小红帽，肩上挂着黄色小挎包，里面装满了未完待续的城市故事。比起赶路，它更喜欢慢悠悠地迷路。</p>
+                                <p className="font-bold text-charcoal italic">“旅行不一定要走得很远，重要的是，你有没有真正遇见这座城市。”</p>
+                            </div>
                         </div>
                     </section>
 
                     {/* 页脚 */}
                     <footer className="bg-charcoal text-cream/70 text-xs py-8 px-4 text-center border-t border-charcoal/20">
-                        <p>© 2026 云上有局 Cloud & Gathering • 上海试点城市双边文化体验平台</p>
+                        <p>© 2026 云上有局 Meet Cloudy | Cloud & Stories</p>
                     </footer>
 
-                    {/* ==================== 动态预订模态框 (Booking Modal - 韩系风格) ==================== */}
+                    {/* ==================== 模态框 1：预约弹窗 ==================== */}
                     {selectedExp && (
                         <div className="fixed inset-0 bg-charcoal/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                            <div className="bg-white rounded-4xl p-6 lg:p-8 max-w-md w-full space-y-5 shadow-2xl border border-soft-gray">
+                            <div className="bg-white rounded-4xl p-6 lg:p-8 max-w-md w-full space-y-4 shadow-2xl border border-soft-gray">
                                 <div className="flex justify-between items-center">
-                                    <h3 className="font-bold text-base text-charcoal">{lang === 'zh' ? '预约文化体验局' : 'Book Experience'}</h3>
+                                    <h3 className="font-bold text-base text-charcoal">预约文化体验局</h3>
                                     <button onClick={() => { setSelectedExp(null); setBookingSuccess(false); }} className="text-charcoal/40 hover:text-charcoal">
                                         <i className="fa-solid fa-xmark text-lg"></i>
                                     </button>
@@ -528,38 +460,57 @@
                                         <div className="flex gap-3 bg-cream p-3.5 rounded-2xl border border-soft-gray">
                                             <img src={selectedExp.image} className="w-16 h-16 object-cover rounded-xl" />
                                             <div>
-                                                <h4 className="font-bold text-charcoal">{lang === 'zh' ? selectedExp.titleZh : selectedExp.title}</h4>
+                                                <h4 className="font-bold text-charcoal">{selectedExp.titleZh}</h4>
                                                 <p className="text-coral font-extrabold mt-1">¥{selectedExp.price} / 人</p>
                                             </div>
                                         </div>
-
-                                        <div>
-                                            <label className="font-bold text-charcoal/70 block mb-1">{lang === 'zh' ? '选择预约日期' : 'Date'}</label>
-                                            <input type="date" defaultValue="2026-11-10" className="w-full border rounded-xl p-3 bg-cream font-medium text-charcoal focus:outline-none" />
-                                        </div>
-
                                         <button 
                                             onClick={() => setBookingSuccess(true)}
                                             className="w-full bg-coral text-white font-bold py-3.5 rounded-2xl text-xs hover:bg-coral-hover transition shadow-md"
                                         >
-                                            {lang === 'zh' ? '确认并模拟组局预订' : 'Confirm & Book'}
+                                            确认并模拟预订
                                         </button>
                                     </div>
                                 ) : (
                                     <div className="text-center py-6 space-y-3">
                                         <div className="text-4xl">🎉</div>
-                                        <h4 className="font-bold text-charcoal text-base">{lang === 'zh' ? '组局预约成功！' : 'Booking Confirmed!'}</h4>
-                                        <p className="text-xs text-charcoal/60">
-                                            {lang === 'zh' ? 'Cloudy 已将预约凭证保存至您的账户。期待在上海与您相遇！' : 'Your reservation has been confirmed. See you in Shanghai!'}
-                                        </p>
+                                        <h4 className="font-bold text-charcoal text-base">组局预约成功！</h4>
+                                        <p className="text-xs text-charcoal/60">Cloudy 已将预约凭证发至您的账户。期待与您相遇！</p>
                                         <button 
                                             onClick={() => { setSelectedExp(null); setBookingSuccess(false); }}
                                             className="bg-charcoal text-white text-xs font-bold px-6 py-2.5 rounded-xl"
                                         >
-                                            {lang === 'zh' ? '完成' : 'Close'}
+                                            关闭
                                         </button>
                                     </div>
                                 )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* ==================== 模态框 2：注册登录弹窗 ==================== */}
+                    {showAuthModal && (
+                        <div className="fixed inset-0 bg-charcoal/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                            <div className="bg-white rounded-4xl p-6 lg:p-8 max-w-sm w-full space-y-5 shadow-2xl border border-soft-gray text-center">
+                                <div className="w-12 h-12 bg-cream rounded-2xl flex items-center justify-center mx-auto border border-soft-gray">
+                                    🎁
+                                </div>
+                                <h3 className="font-extrabold text-base text-charcoal">加入云上有局</h3>
+                                <p className="text-xs text-charcoal/60">注册即赠 ¥50 体验金 + Cloudy 线上纪念徽章</p>
+                                <div className="space-y-3 text-xs">
+                                    <input type="email" placeholder="输入您的 Email / 手机号" className="w-full bg-cream border border-soft-gray p-3 rounded-2xl focus:outline-none" />
+                                    <button 
+                                        onClick={() => {
+                                            setIsLoggedIn(true);
+                                            setShowAuthModal(false);
+                                            alert('注册成功！¥50 云上体验金已发放至您的账户。');
+                                        }}
+                                        className="w-full bg-coral text-white font-bold py-3 rounded-2xl hover:bg-coral-hover transition k-soft-glow"
+                                    >
+                                        免费注册并领取福利
+                                    </button>
+                                </div>
+                                <button onClick={() => setShowAuthModal(false)} className="text-[10px] text-charcoal/40 hover:underline">暂不注册，继续浏览</button>
                             </div>
                         </div>
                     )}
