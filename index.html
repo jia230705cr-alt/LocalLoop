@@ -30,7 +30,7 @@
               },
               pulseGlow: {
                 '0%, 100%': { opacity: '1', transform: 'scale(1)' },
-                '50%': { opacity: '0.7', transform: 'scale(1.18)' },
+                '50%': { opacity: '0.7', transform: 'scale(1.15)' },
               }
             },
             animation: {
@@ -60,41 +60,28 @@
     <script type="text/babel">
         const { useState } = React;
 
-        // Corrected Cloudy IP Mascot SVG (Wings positioned correctly behind body sides)
+        // Cloudy IP Mascot SVG
         function CloudyMascotSVG({ className = "w-40 h-40" }) {
             return (
                 <svg className={className} viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    {/* Left Cloud Wing */}
                     <g transform="translate(8, 100)">
                         <path d="M 20 20 C 10 20, 5 10, 15 0 C 25 -10, 40 0, 45 10 C 50 10, 55 25, 40 30 C 30 35, 20 30, 20 20 Z" fill="#FFFFFF" stroke="#A2D5C6" strokeWidth="3.5"/>
                     </g>
-
-                    {/* Right Cloud Wing */}
                     <g transform="translate(148, 100) scale(-1, 1)">
                         <path d="M 20 20 C 10 20, 5 10, 15 0 C 25 -10, 40 0, 45 10 C 50 10, 55 25, 40 30 C 30 35, 20 30, 20 20 Z" fill="#FFFFFF" stroke="#A2D5C6" strokeWidth="3.5"/>
                     </g>
-
-                    {/* Body */}
                     <ellipse cx="100" cy="118" rx="52" ry="46" fill="#FFFDF9" stroke="#E5DEC9" strokeWidth="3"/>
-                    
-                    {/* Facial Features */}
                     <circle cx="82" cy="104" r="5" fill="#3A3330"/>
                     <circle cx="118" cy="104" r="5" fill="#3A3330"/>
                     <ellipse cx="72" cy="114" rx="7" ry="4" fill="#FFAAA6" opacity="0.8"/>
                     <ellipse cx="128" cy="114" rx="7" ry="4" fill="#FFAAA6" opacity="0.8"/>
                     <path d="M 96 110 Q 100 116 104 110 Z" fill="#F7B267"/>
-
-                    {/* Red Beret */}
                     <path d="M 65 78 C 65 58, 135 58, 135 78 Z" fill="#FF9B85"/>
                     <ellipse cx="100" cy="78" rx="38" ry="8" fill="#EE856E"/>
                     <circle cx="100" cy="55" r="5" fill="#FFE699"/>
-
-                    {/* Yellow Satchel */}
                     <path d="M 75 110 Q 100 145 125 125" stroke="#FFE699" strokeWidth="3.5" fill="none" strokeDasharray="3 2"/>
                     <rect x="115" y="122" width="18" height="15" rx="4" fill="#FFE699" stroke="#F7B267" strokeWidth="2"/>
                     <circle cx="124" cy="129" r="2" fill="#3A3330"/>
-
-                    {/* Feet */}
                     <ellipse cx="85" cy="164" rx="8" ry="4" fill="#F7B267"/>
                     <ellipse cx="115" cy="164" rx="8" ry="4" fill="#F7B267"/>
                 </svg>
@@ -181,8 +168,86 @@
             }
         ];
 
+        // 地图数据点
+        const mapPinsData = [
+            { id: 'clifton', name: 'Clifton Suspension Bridge', emoji: '🌉', type: 'Scenic & Walk', top: '30%', left: '22%', desc: 'Iconic panoramic sunset view over Avon Gorge.' },
+            { id: 'harbourside', name: 'St Nicholas & Harbourside', emoji: '⛵', type: 'Food & Heritage', top: '55%', left: '52%', desc: 'Bustling historic dockyards with indie food stalls.' },
+            { id: 'stokes', name: 'Stokes Croft Street Art', emoji: '🎨', type: 'Banksy & Murals', top: '25%', left: '68%', desc: 'Vibrant cultural hub filled with world-famous graffiti.' }
+        ];
+
+        // 社区 Part 1: Posts Stream Data
+        const communityPosts = [
+            {
+                id: 1,
+                author: 'Alex M.',
+                avatar: '🇬🇧',
+                isOfficial: false,
+                tag: '#StreetArt',
+                tagBg: 'bg-mint-blue/30 text-charcoal',
+                time: '2 hours ago',
+                location: 'Stokes Croft',
+                text: 'Found Banksy’s classic mural right behind the corner! Cloudy’s hand-drawn map led me straight here. Highly recommended!',
+                likes: 38
+            },
+            {
+                id: 2,
+                author: 'Cloudy Official ☁️',
+                avatar: '🕊️',
+                isOfficial: true,
+                tag: '#OfficialMeetup',
+                tagBg: 'bg-coral text-white font-bold',
+                time: 'Yesterday',
+                location: 'Harbourside Cultural Hub',
+                text: '🎉 Signup for this weekend’s [Harbourside Sunset & Pottery Meetup] is now open! Free tea and craft sessions included.',
+                likes: 142
+            },
+            {
+                id: 3,
+                author: 'Emma Watson',
+                avatar: '👩‍🎨',
+                isOfficial: false,
+                tag: '#HiddenGem',
+                tagBg: 'bg-warm-yellow text-charcoal',
+                time: '3 days ago',
+                location: 'Clifton Village',
+                text: 'The artisan cinnamon rolls near Clifton are to die for! Scanned my digital passport stamp and unlocked a 15% discount.',
+                likes: 65
+            }
+        ];
+
+        // 社区 Part 2: Chat Groups Data
+        const chatGroups = [
+            {
+                id: 'cafe',
+                name: '☕ Coffee & Bakery Circle',
+                members: '328 Explorers',
+                messages: [
+                    { sender: 'Oliver', time: '10:14 AM', text: 'Anyone up for a coffee walk on Gloucester Road this afternoon?' },
+                    { sender: 'Cloudy ☁️', time: '10:16 AM', text: 'Don’t forget to try the cardamom buns at Small St Espresso!' },
+                    { sender: 'Sophia', time: '10:20 AM', text: 'I’m in! Let’s meet outside the station at 2 PM.' }
+                ]
+            },
+            {
+                id: 'art',
+                name: '🎨 Street Art & Graffiti Photographers',
+                members: '412 Explorers',
+                messages: [
+                    { sender: 'Lucas', time: 'Yesterday', text: 'New mural just got completed near Nelson Street! Golden hour light is unreal.' },
+                    { sender: 'Hannah', time: 'Yesterday', text: 'Who wants to join the Banksy spray workshop this Saturday?' }
+                ]
+            },
+            {
+                id: 'sunset',
+                name: '🌉 Clifton Sunset Walkers',
+                members: '519 Explorers',
+                messages: [
+                    { sender: 'David', time: '09:00 AM', text: 'Weather forecast looks clear today! Picnic at Suspension Bridge at 6 PM?' }
+                ]
+            }
+        ];
+
         function CloudLoopApp() {
-            const [lang, setLang] = useState('en'); // Default to English
+            const [lang, setLang] = useState('en');
             const [currentCity, setCurrentCity] = useState('Bristol, UK');
             const [showCityDropdown, setShowCityDropdown] = useState(false);
             const [experiencesList, setExperiencesList] = useState(initialExperiences);
@@ -191,7 +256,14 @@
             const [bookingSuccess, setBookingSuccess] = useState(false);
             const [showAuthModal, setShowAuthModal] = useState(false);
             const [isLoggedIn, setIsLoggedIn] = useState(false);
-            const [activeMapPin, setActiveMapPin] = useState('clifton');
+
+            // 地图选定 Pin
+            const [activeMapPin, setActiveMapPin] = useState(mapPinsData[0]);
+
+            // 社区 Part 2: 选中的群组 & 新消息
+            const [activeChat, setActiveChat] = useState(chatGroups[0]);
+            const [chatMessages, setChatMessages] = useState(chatGroups[0].messages);
+            const [inputMsg, setInputMsg] = useState('');
 
             const citiesList = [
                 { name: 'Bristol, UK', active: true },
@@ -216,6 +288,23 @@
                 }
             };
 
+            const handleSwitchChatGroup = (group) => {
+                setActiveChat(group);
+                setChatMessages(group.messages);
+            };
+
+            const handleSendMessage = (e) => {
+                e.preventDefault();
+                if (!inputMsg.trim()) return;
+                const newMsg = {
+                    sender: isLoggedIn ? 'You (Explorer)' : 'Guest Traveler',
+                    time: 'Just now',
+                    text: inputMsg
+                };
+                setChatMessages([...chatMessages, newMsg]);
+                setInputMsg('');
+            };
+
             return (
                 <div className="min-h-screen flex flex-col justify-between selection:bg-coral/20 relative">
                     {/* 1. Navbar */}
@@ -230,7 +319,6 @@
                                 </div>
                             </div>
 
-                            {/* Location Selector Dropdown */}
                             <div className="relative border-l border-soft-gray pl-4 hidden sm:block">
                                 <button 
                                     onClick={() => setShowCityDropdown(!showCityDropdown)}
@@ -262,7 +350,6 @@
                             </div>
                         </div>
 
-                        {/* Navigation Items */}
                         <nav className="hidden md:flex items-center space-x-7 text-xs font-bold text-charcoal/75 tracking-wide">
                             <button onClick={() => scrollToSection('experience-hub')} className="hover:text-coral transition">
                                 ⛩️ {lang === 'en' ? 'Experiences' : '精选局'}
@@ -278,7 +365,6 @@
                             </button>
                         </nav>
 
-                        {/* Language & User Controls */}
                         <div className="flex items-center space-x-3">
                             <button 
                                 onClick={() => setLang(lang === 'en' ? 'zh' : 'en')}
@@ -339,7 +425,6 @@
                                 </div>
                             </div>
 
-                            {/* Animated Mascot */}
                             <div className="md:w-5/12 flex flex-col items-center justify-center relative">
                                 <div className="w-72 h-72 bg-gradient-to-tr from-warm-yellow/30 to-mint-blue/30 rounded-full flex flex-col items-center justify-center border-2 border-dashed border-white p-6 text-center relative shadow-inner animate-float">
                                     <CloudyMascotSVG className="w-48 h-48 drop-shadow-md" />
@@ -429,136 +514,179 @@
                         )}
                     </section>
 
-                    {/* 5. Bristol Illustrated Map */}
+                    {/* ==================== 5. 全屏级高颜值手绘地图 (Full-Width Interactive Map) ==================== */}
                     <section id="city-explorer" className="max-w-6xl mx-auto px-4 py-8 w-full space-y-6">
-                        <div className="border-b border-soft-gray pb-3">
-                            <span className="text-[10px] font-bold text-mint-blue uppercase tracking-wider block">Illustrated Map</span>
-                            <h2 className="text-2xl font-extrabold text-charcoal">{lang === 'en' ? '🗺️ Cloudy’s Bristol Discovery Map' : '🗺️ Cloudy 的布里斯托手绘漫游地图'}</h2>
+                        <div className="border-b border-soft-gray pb-3 flex justify-between items-end">
+                            <div>
+                                <span className="text-[10px] font-bold text-mint-blue uppercase tracking-wider block">Full-Width Interactive Map</span>
+                                <h2 className="text-2xl font-extrabold text-charcoal">{lang === 'en' ? '🗺️ Bristol Discovery Handcrafted Map' : '🗺️ 布里斯托手绘漫游大地图'}</h2>
+                            </div>
+                            <span className="text-xs text-charcoal/50 font-medium">Click markers to explore routes</span>
                         </div>
 
-                        <div className="bg-white rounded-4xl p-6 border border-soft-gray k-card-shadow flex flex-col lg:flex-row gap-6 items-center">
-                            <div className="w-full lg:w-2/3 h-88 bg-gradient-to-br from-[#FFF8EE] via-[#FDF3E3] to-[#F5EAD6] rounded-3xl border-2 border-dashed border-[#E5DEC9] relative overflow-hidden flex items-center justify-center p-4">
-                                <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#3A3330_1px,transparent_1px)] [background-size:20px_20px]"></div>
-                                
-                                <span className="absolute top-4 left-4 z-10 bg-white/90 text-[10px] font-bold text-charcoal px-3 py-1 rounded-full border border-soft-pink shadow-sm">
-                                    💡 {lang === 'en' ? 'Click pins for Cloudy’s local guide' : '点击手绘点位查看 Cloudy 私房指南'}
-                                </span>
-
-                                {/* River Avon Drawing */}
-                                <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-40">
-                                    <path d="M 0 140 Q 200 240 380 140 T 600 200" fill="none" stroke="#B4CEE6" strokeWidth="18" strokeLinecap="round" />
-                                    <path d="M 100 240 Q 250 100 480 170" fill="none" stroke="#FF9B85" strokeWidth="3" strokeDasharray="6 6" />
+                        {/* 大尺寸地图容器 */}
+                        <div className="bg-white rounded-4xl p-4 md:p-6 border border-soft-gray k-card-shadow space-y-6">
+                            <div className="w-full h-96 lg:h-[420px] bg-gradient-to-br from-[#FFF9F2] via-[#FBF1E2] to-[#F3E6D2] rounded-3xl border-2 border-dashed border-[#E3D4BC] relative overflow-hidden shadow-inner flex items-center justify-center">
+                                {/* 底纹及水域 */}
+                                <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#3A3330_1px,transparent_1px)] [background-size:22px_22px]"></div>
+                                <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-45">
+                                    <path d="M 0 160 Q 250 280 500 140 T 1000 220" fill="none" stroke="#B4CEE6" strokeWidth="26" strokeLinecap="round" />
+                                    <path d="M 120 280 Q 300 120 650 200" fill="none" stroke="#FF9B85" strokeWidth="3" strokeDasharray="8 8" />
                                 </svg>
 
-                                <div className="absolute top-8 right-12 text-[10px] font-extrabold text-charcoal/30 tracking-widest pointer-events-none">
-                                    BRISTOL CITY MAP
-                                </div>
-                                <div className="absolute bottom-6 left-8 text-lg opacity-40 pointer-events-none">
-                                    🌉 🎨 ⛵ ☕
+                                <span className="absolute top-4 left-4 z-10 bg-white/95 text-[11px] font-bold text-charcoal px-3.5 py-1.5 rounded-full border border-soft-pink shadow-md">
+                                    💡 Interactive Pins: Click to reveal route guide
+                                </span>
+                                <div className="absolute top-6 right-8 text-xs font-extrabold text-charcoal/25 tracking-widest pointer-events-none">
+                                    BRISTOL DISCOVERY MAP
                                 </div>
 
-                                {/* Pin 1: Clifton Bridge */}
-                                <div 
-                                    className={`absolute top-1/3 left-1/4 cursor-pointer transform hover:scale-110 transition ${activeMapPin === 'clifton' ? 'z-20' : ''}`}
-                                    onClick={() => setActiveMapPin('clifton')}
-                                >
-                                    <div className="relative">
-                                        <span className="absolute -inset-1 rounded-full bg-coral animate-pulseGlow opacity-75"></span>
-                                        <div className="relative bg-coral text-white text-xs px-3.5 py-1.5 rounded-full shadow-md font-bold flex items-center space-x-1">
-                                            <span>🌉 Clifton Suspension Bridge</span>
+                                {/* 地图地标点 1 */}
+                                {mapPinsData.map((pin) => (
+                                    <div 
+                                        key={pin.id}
+                                        style={{ top: pin.top, left: pin.left }}
+                                        onClick={() => setActiveMapPin(pin)}
+                                        className={`absolute cursor-pointer transform -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ${activeMapPin.id === pin.id ? 'scale-110 z-30' : 'hover:scale-105 z-20'}`}
+                                    >
+                                        <div className="relative">
+                                            <span className={`absolute -inset-1 rounded-full animate-pulseGlow ${activeMapPin.id === pin.id ? 'bg-coral' : 'bg-warm-yellow'}`}></span>
+                                            <div className={`relative px-4 py-2 rounded-full shadow-lg border text-xs font-bold flex items-center space-x-1.5 ${
+                                                activeMapPin.id === pin.id ? 'bg-coral text-white border-white' : 'bg-white text-charcoal border-soft-gray'
+                                            }`}>
+                                                <span>{pin.emoji}</span>
+                                                <span className="whitespace-nowrap">{pin.name}</span>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                ))}
+                            </div>
 
-                                {/* Pin 2: Harbourside */}
-                                <div 
-                                    className={`absolute bottom-1/3 right-1/3 cursor-pointer transform hover:scale-110 transition ${activeMapPin === 'harbourside' ? 'z-20' : ''}`}
-                                    onClick={() => setActiveMapPin('harbourside')}
-                                >
-                                    <div className="relative">
-                                        <span className="absolute -inset-1 rounded-full bg-warm-yellow animate-pulseGlow opacity-75"></span>
-                                        <div className="relative bg-warm-yellow text-charcoal text-xs px-3.5 py-1.5 rounded-full shadow-md font-bold flex items-center space-x-1 border border-soft-gray">
-                                            <span>⛵ St Nicholas & Harbourside</span>
+                            {/* 选中地标的下置展示横幅 */}
+                            {activeMapPin && (
+                                <div className="bg-gradient-to-r from-soft-pink/30 via-cream to-mint-blue/20 p-6 rounded-3xl border border-soft-pink/40 flex flex-col md:flex-row justify-between items-center gap-4">
+                                    <div className="space-y-1">
+                                        <div className="flex items-center space-x-2">
+                                            <span className="text-xl">{activeMapPin.emoji}</span>
+                                            <span className="text-xs font-bold bg-coral text-white px-2.5 py-0.5 rounded-full">{activeMapPin.type}</span>
+                                            <h4 className="font-extrabold text-charcoal text-base">{activeMapPin.name}</h4>
                                         </div>
+                                        <p className="text-xs text-charcoal/70">{activeMapPin.desc}</p>
                                     </div>
+                                    <button onClick={() => alert(`Starting GPS route guide for ${activeMapPin.name}...`)} className="bg-charcoal text-white font-bold px-6 py-2.5 rounded-2xl text-xs hover:bg-coral transition shadow-md whitespace-nowrap">
+                                        Start Route Navigation →
+                                    </button>
                                 </div>
-                            </div>
-
-                            {/* Pin Details */}
-                            <div className="w-full lg:w-1/3 space-y-4">
-                                {activeMapPin === 'clifton' ? (
-                                    <div className="bg-soft-pink/30 p-5 rounded-3xl border border-soft-pink space-y-3 transition-all duration-300">
-                                        <span className="text-[10px] font-bold bg-coral text-white px-2.5 py-0.5 rounded-full">Cloudy Trail A</span>
-                                        <h4 className="font-bold text-charcoal text-sm">【Clifton Village to Suspension Bridge】</h4>
-                                        <p className="text-xs text-charcoal/70 leading-relaxed">A 2.5 km scenic stroll through Clifton Georgian lanes ending with sunset views over Avon Gorge.</p>
-                                        <button onClick={() => alert('Navigating to Clifton Walk Guide!')} className="w-full bg-white text-charcoal border border-soft-pink font-bold py-2 rounded-xl text-xs hover:bg-coral hover:text-white transition">
-                                            Start Walking Route
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <div className="bg-warm-yellow/30 p-5 rounded-3xl border border-warm-yellow space-y-3 transition-all duration-300">
-                                        <span className="text-[10px] font-bold bg-warm-yellow text-charcoal px-2.5 py-0.5 rounded-full border border-black/10">Cloudy Trail B</span>
-                                        <h4 className="font-bold text-charcoal text-sm">【Harbourside & St Nicholas Food Walk】</h4>
-                                        <p className="text-xs text-charcoal/70 leading-relaxed">Explore historic markets, independent cafes, and colourful docks along the River Avon.</p>
-                                        <button onClick={() => alert('Navigating to Harbourside Food Walk Guide!')} className="w-full bg-white text-charcoal border border-warm-yellow font-bold py-2 rounded-xl text-xs hover:bg-warm-yellow transition">
-                                            Start Walking Route
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
+                            )}
                         </div>
                     </section>
 
-                    {/* 6. Community Section */}
-                    <section id="community-section" className="max-w-6xl mx-auto px-4 py-8 w-full space-y-6">
+                    {/* ==================== 6. 重构版 Community 模块 (Part 1 + Part 2) ==================== */}
+                    <section id="community-section" className="max-w-6xl mx-auto px-4 py-8 w-full space-y-8">
                         <div className="border-b border-soft-gray pb-3 flex justify-between items-end">
                             <div>
-                                <span className="text-[10px] font-bold text-soft-purple uppercase tracking-wider block">Community & Meetups</span>
-                                <h2 className="text-2xl font-extrabold text-charcoal">{lang === 'en' ? '💬 Bristol Local Stories & Meetups' : '💬 云上社区与线下组局'}</h2>
+                                <span className="text-[10px] font-bold text-soft-purple uppercase tracking-wider block">Community Hub</span>
+                                <h2 className="text-2xl font-extrabold text-charcoal">{lang === 'en' ? '💬 Bristol Community & Chat Circles' : '💬 社区流与城市群聊'}</h2>
                             </div>
-                            <button onClick={() => alert('Feature opening soon...')} className="text-xs font-bold text-coral hover:underline">
-                                {lang === 'en' ? '+ Share Your Story' : '+ 发布我的私藏局'}
+                            <button onClick={() => setShowAuthModal(true)} className="text-xs font-bold text-coral hover:underline">
+                                {lang === 'en' ? '+ Post Story' : '+ 发布我的私藏局'}
                             </button>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="bg-white p-5 rounded-3xl border border-soft-gray k-card-shadow space-y-3">
-                                <div className="flex items-center space-x-2.5 text-xs">
-                                    <span className="w-8 h-8 rounded-full bg-mint-blue/30 flex items-center justify-center font-bold text-charcoal">A</span>
-                                    <div>
-                                        <div className="font-bold text-charcoal">Alex ( UK 🇬🇧 )</div>
-                                        <div className="text-[10px] text-charcoal/40">Stokes Croft • 2h ago</div>
-                                    </div>
-                                </div>
-                                <p className="text-xs text-charcoal/70 leading-relaxed">
-                                    {lang === 'en' ? 'Found this hidden street art workshop thanks to Cloudy! Unlocked my first Bristol badge.' : '跟着 Cloudy 找到了这个涂鸦工坊，拿到了我的第一个布里斯托印章！'}
-                                </p>
-                            </div>
+                        {/* PART 1: 带有 Tag 的动态 Post 流 */}
+                        <div className="space-y-4">
+                            <h3 className="font-extrabold text-sm text-charcoal flex items-center space-x-2">
+                                <span>📌 Part 1: Explorer Feeds & Tagged Posts</span>
+                                <span className="text-[10px] font-normal bg-soft-purple/30 text-charcoal px-2 py-0.5 rounded-full">User & Official Posts</span>
+                            </h3>
 
-                            <div className="bg-white p-5 rounded-3xl border border-soft-gray k-card-shadow space-y-3">
-                                <div className="flex items-center space-x-2.5 text-xs">
-                                    <span className="w-8 h-8 rounded-full bg-soft-pink text-coral flex items-center justify-center font-bold">L</span>
-                                    <div>
-                                        <div className="font-bold text-charcoal">Lily ( Local Host 🇬🇧 )</div>
-                                        <div className="text-[10px] text-charcoal/40">Clifton • Yesterday</div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {communityPosts.map((post) => (
+                                    <div key={post.id} className="bg-white p-6 rounded-3xl border border-soft-gray k-card-shadow flex flex-col justify-between space-y-4">
+                                        <div className="space-y-3">
+                                            <div className="flex justify-between items-center">
+                                                <div className="flex items-center space-x-2">
+                                                    <span className="w-8 h-8 rounded-full bg-soft-pink/50 flex items-center justify-center font-bold text-xs">{post.avatar}</span>
+                                                    <div>
+                                                        <div className="font-bold text-xs text-charcoal">{post.author}</div>
+                                                        <div className="text-[10px] text-charcoal/40">{post.location} • {post.time}</div>
+                                                    </div>
+                                                </div>
+                                                <span className={`text-[10px] px-2.5 py-0.5 rounded-full font-bold ${post.tagBg}`}>
+                                                    {post.tag}
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-charcoal/75 leading-relaxed">{post.text}</p>
+                                        </div>
+                                        <div className="pt-3 border-t border-cream flex justify-between items-center text-[10px] text-charcoal/50">
+                                            <span>📍 Bristol Local</span>
+                                            <button className="hover:text-coral font-bold" onClick={(e) => e.target.innerText = `❤️ ${post.likes + 1}`}>
+                                                ❤️ {post.likes}
+                                            </button>
+                                        </div>
                                     </div>
-                                </div>
-                                <p className="text-xs text-charcoal/70 leading-relaxed">
-                                    {lang === 'en' ? 'Weekend Sunset Picnic & Photography Walk is open for registration! Everyone is welcome.' : '本周末【克里夫顿落日野餐摄影局】开始报名啦！'}
-                                </p>
+                                ))}
                             </div>
+                        </div>
 
-                            <div className="bg-gradient-to-br from-soft-purple/20 to-soft-pink/30 p-5 rounded-3xl border border-soft-purple/30 k-card-shadow flex flex-col justify-between">
-                                <div>
-                                    <span className="text-[10px] font-bold bg-white text-charcoal px-3 py-1 rounded-full shadow-sm">
-                                        🎉 Official Meetup
-                                    </span>
-                                    <h4 className="font-bold text-sm text-charcoal mt-3">{lang === 'en' ? 'Weekend Harbourside Gathering' : '周末 CloudLoop 海港相聚局'}</h4>
-                                    <p className="text-xs text-charcoal/60 mt-1">Location: Harbourside Cultural Hub</p>
+                        {/* PART 2: 城市主题讨论群组 / 群聊区 (Group Chats & Discussions) */}
+                        <div className="space-y-4 pt-4">
+                            <h3 className="font-extrabold text-sm text-charcoal flex items-center space-x-2">
+                                <span>💬 Part 2: Bristol Chat Circles (Topic Groups)</span>
+                                <span className="text-[10px] font-normal bg-mint-blue/30 text-charcoal px-2 py-0.5 rounded-full">Live Discussion</span>
+                            </h3>
+
+                            <div className="bg-white rounded-4xl border border-soft-gray k-card-shadow overflow-hidden flex flex-col md:flex-row h-[420px]">
+                                {/* 群聊列表左侧栏 */}
+                                <div className="w-full md:w-1/3 bg-cream/60 border-r border-soft-gray p-4 space-y-2">
+                                    <div className="text-[10px] font-bold text-charcoal/40 uppercase tracking-wider px-2 mb-2">Select Chat Group</div>
+                                    {chatGroups.map((group) => (
+                                        <div 
+                                            key={group.id}
+                                            onClick={() => handleSwitchChatGroup(group)}
+                                            className={`p-3.5 rounded-2xl cursor-pointer transition ${activeChat.id === group.id ? 'bg-white shadow-sm border border-soft-pink font-bold' : 'hover:bg-white/60 text-charcoal/70'}`}
+                                        >
+                                            <div className="text-xs font-bold text-charcoal">{group.name}</div>
+                                            <div className="text-[10px] text-coral font-medium mt-1">👥 {group.members}</div>
+                                        </div>
+                                    ))}
                                 </div>
-                                <button onClick={() => alert('Successfully registered for Bristol Meetup!')} className="w-full bg-coral text-white text-xs font-bold py-2.5 rounded-xl mt-4 hover:bg-coral-hover transition shadow-sm">
-                                    {lang === 'en' ? 'Join Event' : '模拟报名线下局'}
-                                </button>
+
+                                {/* 聊天对话框右侧区 */}
+                                <div className="w-full md:w-2/3 flex flex-col justify-between p-4 md:p-6 bg-white">
+                                    <div className="border-b border-cream pb-3 flex justify-between items-center">
+                                        <h4 className="font-extrabold text-sm text-charcoal">{activeChat.name}</h4>
+                                        <span className="text-[10px] bg-mint-blue/20 text-charcoal px-2.5 py-1 rounded-full font-bold">🟢 Active Now</span>
+                                    </div>
+
+                                    {/* 消息滚动框 */}
+                                    <div className="flex-1 overflow-y-auto space-y-3 py-4 pr-2">
+                                        {chatMessages.map((msg, i) => (
+                                            <div key={i} className={`flex flex-col ${msg.sender.includes('You') ? 'items-end' : 'items-start'}`}>
+                                                <span className="text-[10px] text-charcoal/40 mb-1">{msg.sender} • {msg.time}</span>
+                                                <div className={`p-3 rounded-2xl text-xs max-w-xs leading-relaxed ${
+                                                    msg.sender.includes('You') ? 'bg-coral text-white' : (msg.sender.includes('Cloudy') ? 'bg-warm-yellow/40 border border-warm-yellow text-charcoal font-medium' : 'bg-cream text-charcoal')
+                                                }`}>
+                                                    {msg.text}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    {/* 输入框 */}
+                                    <form onSubmit={handleSendMessage} className="flex gap-2 pt-3 border-t border-cream">
+                                        <input 
+                                            type="text" 
+                                            value={inputMsg}
+                                            onChange={(e) => setInputMsg(e.target.value)}
+                                            placeholder={`Share your thoughts in ${activeChat.name}...`}
+                                            className="flex-1 bg-cream border border-soft-gray px-4 py-2.5 rounded-2xl text-xs focus:outline-none"
+                                        />
+                                        <button type="submit" className="bg-coral text-white text-xs font-bold px-5 py-2.5 rounded-2xl hover:bg-coral-hover transition">
+                                            Send
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </section>
