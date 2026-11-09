@@ -86,7 +86,7 @@ case 'remove-plan':plans=plans.filter(p=>p.id!==id);write('plans',plans);updateC
 case 'browse':closeModal();$('#discover').scrollIntoView({behavior:'smooth'});break;
 case 'route':activeRoute=id;renderRoutes();break;
 case 'story-route':case 'detail-route':goRoute(id);break;
-case 'related':{const area={clifton:'Clifton',harbour:'',art:''}[id];filters={q:area,date:'',category:id==='harbour'?'food':id==='art'?'art':'',max:''};$('#search').value=filters.q;$('#filter-date').value='';$('#filter-category').value=filters.category;$('#filter-max').value='';renderDates();renderExperiences();$('#discover').scrollIntoView({behavior:'smooth'});break;}
+case 'related':{const area={clifton:'Clifton',harbour:'Harbourside',art:'Stokes Croft'}[id];filters={q:area,date:'',category:'',max:''};$('#search').value=filters.q;$('#filter-date').value='';$('#filter-category').value=filters.category;$('#filter-max').value='';renderDates();renderExperiences();$('#discover').scrollIntoView({behavior:'smooth'});break;}
 case 'like':liked=liked.includes(id)?liked.filter(x=>x!==id):[...liked,id];write('liked',liked);renderStories();break;
 case 'note':noteForm();break;
 case 'remove-note':notes.splice(Number(id.replace('local-','')),1);write('notes',notes);renderStories();break;
